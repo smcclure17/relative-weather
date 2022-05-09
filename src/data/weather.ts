@@ -29,7 +29,7 @@ export class Weather {
         // TODO: create yesterday date from nowWeather.timestamp
         // this below line isnt working as expected. its not using nowWeather.timestamp
         // const prevDate = date.setUTCDate(date.getUTCDate() -1);
-        const yesterdayWeather = findClosestDate(weatherDays, date)
+        const yesterdayWeather = findClosestDate(weatherDays, nowWeather.timestamp)
         const deltaWeather = (nowWeather?.temperature ?? 0) - (yesterdayWeather?.temperature ?? 0)
         return new Weather(weatherDays, nowWeather, yesterdayWeather, deltaWeather)
     }
