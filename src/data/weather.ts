@@ -26,6 +26,7 @@ export class Weather {
         const date = new Date()
         const nowWeather = findClosestDate(weatherDays, date)
         console.log("nowWeather", nowWeather.timestamp)
+        // TODO: create yesterday date from nowWeather.timestamp
         // this below line isnt working as expected. its not using nowWeather.timestamp
         // const prevDate = date.setUTCDate(date.getUTCDate() -1);
         const yesterdayWeather = findClosestDate(weatherDays, date)
