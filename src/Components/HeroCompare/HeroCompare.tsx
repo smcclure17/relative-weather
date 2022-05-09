@@ -12,13 +12,13 @@ export const HeroCompare = ({
   return (
     <Box>
       <Typography variant="h1" align="center">
-          {`${(weather?.delta ? formatDelta(weather?.delta) : "undefined")}`}&deg;F
+          {`${(weather?.delta ? formatDelta(weather?.delta) : "NA")}`}&deg;F
       </Typography>
       <Typography align="center">
-          {`Current Temperature ${(weather?.now?.temperature ?? "00")}`}&deg;F
+          {`Current Temperature ${(weather?.now?.temperature ?? "NA")}`}&deg;F
       </Typography>
       <Typography align="center">
-          {`Yesterday's Temperature ${weather?.yesterday?.temperature ?? "00"}`}&deg;F
+          {`Yesterday's Temperature ${weather?.yesterday?.temperature ?? "NA"}`}&deg;F
       </Typography>
       <div>
         <Typography align="center">Time of observations:</Typography>
