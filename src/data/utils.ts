@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 
 /** Fetches data from a URL, parses it as JSON, and casts it to type T. */
 export async function fetchJson<T>(url: string): Promise<T> {
@@ -15,7 +16,7 @@ export function formatTimeOfDay(stamp: number) {
     return dtFormat.format(new Date(stamp));
 }
 
-  export const formatDate = (c: Date | undefined) => {
+  export const formatDate = (c: DateTime | undefined) => {
     if (c === undefined) {return "undefined"}
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const options: Intl.DateTimeFormatOptions = {
@@ -25,7 +26,7 @@ export function formatTimeOfDay(stamp: number) {
     }
     const dtFormat = new Intl.DateTimeFormat('en', options)
     
-    return dtFormat.format(c)
+    return dtFormat.format(c.toJSDate())
 }
 
 // Interfaces interpolated from API responses. I've removed some layers that are 
