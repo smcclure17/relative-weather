@@ -1,10 +1,16 @@
 import { WeatherObservations } from "./observations"
+import { DateTime } from "luxon"
+
+enum WeatherType {
+    OBSERVATION,
+    FORECAST
+}
 
 export interface WeatherDay {
     temperature: number,
     description: string,
-    tag: string, // should be an enum: Forecast or Observation,
-    timestamp: Date
+    tag: WeatherType,
+    timestamp: DateTime
 }
 
 export class Weather {
@@ -13,23 +19,23 @@ export class Weather {
         const observations = new WeatherObservations().observations        
         const weatherDays: WeatherDay[] = []
         ;(await observations).forEach(observation => {
-            // remove instances with no temperature, because what's the point of that :(
             if (observation.temperature != null) {
+                // NOTE: in the future we'll have both observations (measured temps)
+                // and forecasts (predicted temps) and we'll want to differentiate them.
+                // For now, we only have observations, so just hard code them.
                 weatherDays.push({
-                    tag: "observation",
+                    tag: WeatherType.OBSERVATION,
                     temperature: toFahrenheit(observation["temperature"]),
                     description: observation["description"],
-                    timestamp: new Date(observation["timestamp"]),
+                    timestamp: observation["timestamp"],
                 })
             }
         })
-        const date = new Date()
-        const nowWeather = findClosestDate(weatherDays, date)
-        console.log("nowWeather", nowWeather.timestamp)
-        // TODO: create yesterday date from nowWeather.timestamp
-        // this below line isnt working as expected. its not using nowWeather.timestamp
-        // const prevDate = date.setUTCDate(date.getUTCDate() -1);
-        const yesterdayWeather = findClosestDate(weatherDays, nowWeather.timestamp)
+        const today = DateTime.now()
+        const nowWeather = findMatchingOrClosestDate(weatherDays, today)
+        const prevDate = nowWeather.timestamp.minus({days: 1})
+        const yesterdayWeather = findMatchingOrClosestDate(weatherDays, prevDate)
+        // TODO: handle null/missing temperatures not like this lmao.
         const deltaWeather = (nowWeather?.temperature ?? 0) - (yesterdayWeather?.temperature ?? 0)
         return new Weather(weatherDays, nowWeather, yesterdayWeather, deltaWeather)
     }
@@ -41,7 +47,7 @@ export class Weather {
     ) {}
 }
 
-function findClosestDate(records: WeatherDay[], date: Date): WeatherDay {
+function findMatchingOrClosestDate(records: WeatherDay[], date: DateTime): WeatherDay {
     const matches = records.filter(day => day.timestamp === date)
     if (matches.length !== 0){
         return matches[0]
