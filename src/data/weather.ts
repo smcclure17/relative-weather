@@ -1,7 +1,7 @@
 import { WeatherObservations } from "./observations"
 import { DateTime } from "luxon"
 
-enum WeatherType {
+export enum WeatherType {
     OBSERVATION,
     FORECAST
 }
@@ -35,8 +35,7 @@ export class Weather {
         const nowWeather = findMatchingOrClosestDate(weatherDays, today)
         const prevDate = nowWeather.timestamp.minus({days: 1})
         const yesterdayWeather = findMatchingOrClosestDate(weatherDays, prevDate)
-        // TODO: handle null/missing temperatures not like this lmao.
-        const deltaWeather = (nowWeather?.temperature ?? 0) - (yesterdayWeather?.temperature ?? 0)
+        const deltaWeather = nowWeather.temperature - yesterdayWeather.temperature
         return new Weather(weatherDays, nowWeather, yesterdayWeather, deltaWeather)
     }
     constructor (
