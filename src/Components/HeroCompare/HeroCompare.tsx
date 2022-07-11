@@ -12,7 +12,7 @@ export const HeroCompare = ({ delta }: WeatherProps) => {
   return (
     <Grid container style={{backgroundColor: bgColor, paddingBottom: 20}}>
       <Grid item xs={12}>
-      <Typography variant="h1" align="center" color={"white"} paddingTop={10}>
+      <Typography variant="h1" align="center" color={"white"} paddingTop={5}>
           {`${(delta ? formatDelta(delta) : "-")}`}&deg;F
       </Typography>
       <Typography align="center" color="white" fontStyle="italic" fontWeight={100}>Compared to this time yesterday.</Typography>
