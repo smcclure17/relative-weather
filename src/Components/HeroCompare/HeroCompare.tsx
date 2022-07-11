@@ -1,33 +1,25 @@
-import { Weather } from "../../data/weather"
-import { Box, Typography } from "@mui/material";
-import { formatDate } from "../../data/utils"
+import { Grid, Skeleton, TextField, Typography } from "@mui/material";
 
 interface WeatherProps {
-  weather: Weather | undefined;
+  delta: number | undefined;
 }
 
-export const HeroCompare = ({
-  weather,
-}: WeatherProps) => {
+export const HeroCompare = ({ delta }: WeatherProps) => {
+  if (delta === undefined) {
+    return <Skeleton height={500}></Skeleton>
+  }
+  const bgColor = delta < 0 ? "#008DB9" : "#E6534E"
   return (
-    <Box>
-      <Typography variant="h1" align="center">
-          {`${(weather?.delta ? formatDelta(weather?.delta) : "undefined")}`}&deg;F
+    <Grid container style={{backgroundColor: bgColor, paddingBottom: 20}}>
+      <Grid item xs={12}>
+      <Typography variant="h1" align="center" color={"white"} paddingTop={5}>
+          {`${(delta ? formatDelta(delta) : "-")}`}&deg;F
       </Typography>
-      <Typography align="center">
-          {`Current Temperature ${(weather?.now?.temperature ?? "undefined")}`}&deg;F
-      </Typography>
-      <Typography align="center">
-          {`Yesterday's Temperature ${weather?.yesterday?.temperature ?? "undefined"}`}&deg;F
-      </Typography>
-      <div>
-        <Typography align="center">Time of observations:</Typography>
-        <Typography>{`Today: ${formatDate(weather?.now?.timestamp)} Yesterday: ${formatDate(weather?.yesterday?.timestamp)}`}</Typography>
-      </div>
-    </Box>
+      <Typography align="center" color="white" fontStyle="italic" fontWeight={100}>Compared to this time yesterday.</Typography>
+      </Grid>
+      </Grid>
   );
 };
-
 
 
 function formatDelta(delta: number): string {
@@ -38,6 +30,6 @@ function formatDelta(delta: number): string {
       return "+" + delta.toFixed()
   }
   else {
-      return "+0"
+      return "+ 0"
   }
 }
