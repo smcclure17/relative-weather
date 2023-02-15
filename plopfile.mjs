@@ -16,24 +16,6 @@ export const {{pascalCase name}} = (props: {{pascalCase name}}Props) => {
   return <>{{pascalCase name}}</>;
 };`);
 
-const templateComponentStories = prepareTemplate(`
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { {{pascalCase name}} } from ".";
-
-export default {
-  title: "Components/{{pascalCase name}}",
-  component: {{pascalCase name}},
-} as ComponentMeta<typeof {{pascalCase name}}>;
-
-const Template: ComponentStory<typeof {{pascalCase name}}> = (args) => (
-  <{{pascalCase name}} {...args} />
-);
-
-export const Example = Template.bind({});
-Example.args = {};
-`);
-
 const templateComponentIndex = prepareTemplate(`
 export * from "./{{pascalCase name}}";
 `);
@@ -60,11 +42,6 @@ function plopConfig(/** @type {import('plop').NodePlopAPI} */ plop) {
         type: "add",
         path: `${componentBasePath}/{{pascalCase name}}/{{pascalCase name}}.tsx`,
         template: templateComponentMain,
-      },
-      {
-        type: "add",
-        path: `${componentBasePath}/{{pascalCase name}}/{{pascalCase name}}.stories.tsx`,
-        template: templateComponentStories,
       },
     ],
   });
