@@ -65,7 +65,6 @@ export const DeltaChart = ({
         width={minWidth}
         xScale={xScale}
         yScale={yScale}
-        margins={margins}
         minValue={min.value}
         maxValue={max.value}
       />

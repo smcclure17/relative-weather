@@ -44,7 +44,7 @@ export const DeltaChartMobile = ({
 
   const xScale = scaleLinear({
     domain: [0, 24],
-    range: [0, windowSize.width - margins.right],
+    range: [0, windowSize.width + (margins.left)],
   });
 
   const yScale = scaleLinear({
@@ -66,7 +66,6 @@ export const DeltaChartMobile = ({
       sx={{
         width: windowSize.width,
         height: 250,
-        px: 2,
         py: 2,
         backgroundColor: "transparent",
       }}
@@ -77,7 +76,6 @@ export const DeltaChartMobile = ({
         width={windowSize.width}
         xScale={xScale}
         yScale={yScale}
-        margins={margins}
         minValue={min.value}
         maxValue={max.value}
       />

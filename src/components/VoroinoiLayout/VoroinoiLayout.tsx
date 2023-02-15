@@ -15,7 +15,6 @@ export type VoronoiLayoutProps = {
   data: HourlyDatapoint[];
   width: number;
   height: number;
-  margins: { top: number; right: number; bottom: number; left: number };
   xScale: ScaleLinear<number, number, never>;
   yScale: ScaleLinear<number, number, never>;
   minValue: number;
@@ -35,7 +34,6 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
     data,
     width,
     height,
-    margins,
     xScale,
     yScale,
     hideTooltip,
@@ -153,8 +151,8 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
           />
           <Group>
             <line
-              x1={xScale(0)}
-              x2={xScale(1)}
+              x1={xScale(1)}
+              x2={xScale(2)}
               y1={yScale(maxValue - 1)}
               y2={yScale(maxValue - 1)}
               stroke={"#444"}
@@ -163,14 +161,14 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             <text
               fontFamily="Arial"
               fontSize={12}
-              x={xScale(1.2)}
+              x={xScale(2.2)}
               y={yScale(maxValue - 1.2)}
             >
               today
             </text>
             <line
-              x1={xScale(3.5)}
-              x2={xScale(4.5)}
+              x1={xScale(4.5)}
+              x2={xScale(5.5)}
               y1={yScale(maxValue - 1)}
               y2={yScale(maxValue - 1)}
               stroke={"#ababab"}
@@ -179,7 +177,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             <text
               fontFamily="Arial"
               fontSize={12}
-              x={xScale(4.7)}
+              x={xScale(5.7)}
               y={yScale(maxValue - 1.2)}
             >
               yesterday
