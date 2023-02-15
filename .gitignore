@@ -1,0 +1,8 @@
+# depedencies
+node_modules
+
+# next build output
+.next
+
+# vscode stuff
+.vscode
