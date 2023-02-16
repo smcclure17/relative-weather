@@ -1,3 +1,4 @@
+import { Region } from "@/regions";
 import { Timeseries } from "@/timeseries";
 import { keyBy, merge } from "lodash";
 import { DateTime } from "luxon";
@@ -31,14 +32,15 @@ export interface Weather {
  * @returns Weather data
  */
 async function getWeatherData(
+  region: Region,
   observationsProps?: ObservationsProps,
   forecastsProps?: ForecastsProps
 ): Promise<Weather> {
   const observations = new Observations(observationsProps);
   const forecasts = new Forecasts(forecastsProps);
   const [observationsData, forecastsData] = await Promise.all([
-    observations.fetchWeatherData(),
-    forecasts.fetchWeatherData(),
+    observations.fetchWeatherData(region),
+    forecasts.fetchWeatherData(region),
   ]);
   const data = [observationsData, forecastsData].flat();
 
@@ -68,16 +70,17 @@ async function getWeatherData(
  * @returns Weather data
  */
 export function useWeather(
+  region: Region,
   observationsProps?: ObservationsProps,
   forecastsProps?: ForecastsProps
 ): DataOrError<Weather> {
   const [weather, setWeather] = useState<DataOrError<Weather>>({});
 
   useEffect(() => {
-    getWeatherData(observationsProps, forecastsProps)
+    getWeatherData(region, observationsProps, forecastsProps)
       .then((data) => setWeather({ data }))
       .catch((error) => setWeather({ error }));
-  }, [observationsProps, forecastsProps]);
+  }, [observationsProps, forecastsProps, region]);
 
   return weather;
 }

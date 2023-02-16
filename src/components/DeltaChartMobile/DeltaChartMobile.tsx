@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { scaleLinear } from "@visx/scale";
 import { NotEmptyTimeseries, Timeseries } from "@/timeseries";
-import { VoronoiLayout } from "../VoroinoiLayout";
+import { LineChart } from "../LineChart";
 
 export interface DeltaChartProps {
   data: NotEmptyTimeseries<number>;
@@ -74,7 +74,7 @@ export const DeltaChartMobile = ({
         backgroundColor: "transparent",
       }}
     >
-      <VoronoiLayout
+      <LineChart
         data={days}
         height={250}
         width={windowSize.width}

@@ -4,14 +4,14 @@ import { withTooltip, Tooltip, TooltipWithBounds } from "@visx/tooltip";
 import { WithTooltipProvidedProps } from "@visx/tooltip/lib/enhancers/withTooltip";
 import { voronoi } from "@visx/voronoi";
 import { localPoint } from "@visx/event";
-import { curveMonotoneX } from "@visx/curve";
+import { curveLinear } from "@visx/curve";
 import { Threshold } from "@visx/threshold";
 import { Typography } from "@mui/material";
 import { ScaleLinear } from "d3-scale";
 import { Group } from "@visx/group";
 import { PatternLines } from "@visx/pattern";
 
-export type VoronoiLayoutProps = {
+export type LineChartProps = {
   data: HourlyDatapoint[];
   width: number;
   height: number;
@@ -30,7 +30,7 @@ interface HourlyDatapoint {
 
 let tooltipTimeout: number;
 
-export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
+export const LineChart = withTooltip<LineChartProps, HourlyDatapoint>(
   ({
     data,
     width,
@@ -45,9 +45,9 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
     tooltipTop,
     maxValue,
     lastObservation,
-  }: VoronoiLayoutProps & WithTooltipProvidedProps<HourlyDatapoint>) => {
+  }: LineChartProps & WithTooltipProvidedProps<HourlyDatapoint>) => {
     const svgRef = useRef<SVGSVGElement>(null);
-    const voronoiLayout = useMemo(
+    const LineChart = useMemo(
       () =>
         voronoi<HourlyDatapoint>({
           x: (d) => xScale(d.hour) ?? null,
@@ -68,7 +68,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
         const point = localPoint(svgRef.current, event);
         if (!point) return;
         const neighborRadius = 500;
-        const closest = voronoiLayout.find(point.x, point.y, neighborRadius);
+        const closest = LineChart.find(point.x, point.y, neighborRadius);
         if (closest) {
           showTooltip({
             tooltipLeft: xScale(closest.data.hour),
@@ -77,7 +77,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
           });
         }
       },
-      [xScale, yScale, showTooltip, voronoiLayout]
+      [xScale, yScale, showTooltip, LineChart]
     );
 
     const handleMouseLeave = useCallback(() => {
@@ -121,7 +121,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             y1={(d) => yScale(d.yesterday)}
             clipAboveTo={15000}
             clipBelowTo={0}
-            curve={curveMonotoneX}
+            curve={curveLinear}
             belowAreaProps={{
               fill: "url('#red-lines')",
               fillOpacity: 0.3,
@@ -135,7 +135,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             data={data}
             x={(d) => xScale(d.hour)}
             y={(d) => yScale(d.yesterday)}
-            curve={curveMonotoneX}
+            curve={curveLinear}
             shapeRendering={"geometricPrecision"}
             strokeLinejoin={"round"}
             strokeWidth={3}
@@ -145,17 +145,17 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             data={data.filter((d) => d.hour <= lastObservation)}
             x={(d) => xScale(d.hour)}
             y={(d) => yScale(d.today)}
-            curve={curveMonotoneX}
+            curve={curveLinear}
             shapeRendering={"geometricPrecision"}
             strokeLinejoin={"bevel"}
             stroke={"#444"}
             strokeWidth={3}
           />
           <LinePath
-            data={data.filter((d) => d.hour >= lastObservation)}
+            data={data}
             x={(d) => xScale(d.hour)}
             y={(d) => yScale(d.today)}
-            curve={curveMonotoneX}
+            curve={curveLinear}
             shapeRendering={"geometricPrecision"}
             strokeLinejoin={"bevel"}
             stroke={"#444"}

@@ -2,11 +2,30 @@ import { DeltaCard, DeltaChart } from "@/components";
 import { DayCard } from "@/components/DayCard";
 import { DeltaChartMobile } from "@/components/DeltaChartMobile";
 import { useWeather } from "@/fetching";
-import { Paper, Stack, Theme, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Paper,
+  Stack,
+  Theme,
+  useMediaQuery,
+} from "@mui/material";
 import { NextPage } from "next";
+import { useState } from "react";
+import {
+  allRegions,
+  getRegionById,
+  Region,
+  RegionId,
+  regions,
+} from "@/regions";
 
 const Desktop = () => {
-  const { data, error } = useWeather();
+  const boston = getRegionById(RegionId.BOSTON);
+  // TODO: use local storage to persist region across sessions.
+  const [region, setRegion] = useState<Region>(boston);
+  const { data, error } = useWeather(region);
+
   if (error) {
     return <div>Something went wrong</div>;
   }
@@ -14,7 +33,6 @@ const Desktop = () => {
   if (!data) return null;
   const timeseries = data?.timeseries.removeNulls();
   if (!timeseries?.hasData()) return null;
-  console.log(data.lastObservationHour);
 
   return (
     <Paper
@@ -25,6 +43,21 @@ const Desktop = () => {
       }}
     >
       <Stack p={5} alignContent="center">
+        <Stack direction={"row"} spacing={2} margin="auto">
+          {allRegions.map((region) => {
+            return (
+              <Button
+                key={region.shortName}
+                color="secondary"
+                variant="outlined"
+                onClick={() => setRegion(region)}
+              >
+                {region.name}
+              </Button>
+            );
+          })}
+        </Stack>
+        <Divider sx={{ marginTop: 4 }} />
         <Stack
           direction="row"
           spacing={4}
@@ -35,7 +68,7 @@ const Desktop = () => {
             alignItems: "center",
           }}
         >
-          <DeltaCard data={data} />
+          <DeltaCard data={data} regionName={region.name} />
           <DayCard weatherDay={data.currentData} />
           <DayCard weatherDay={data.previousData} />
         </Stack>
@@ -49,7 +82,9 @@ const Desktop = () => {
 };
 
 const Mobile = () => {
-  const { data, error } = useWeather();
+  const boston = getRegionById(RegionId.BOSTON);
+  const [region, setRegion] = useState<Region>(boston);
+  const { data, error } = useWeather(region);
   if (error) {
     return <div>Something went wrong</div>;
   }
@@ -67,6 +102,22 @@ const Mobile = () => {
       }}
     >
       <Stack p={5} alignContent="center">
+        <Stack direction={"row"} spacing={2} alignItems="center" margin="auto">
+          {allRegions.map((region) => {
+            return (
+              <Button
+                key={region.shortName}
+                color="secondary"
+                variant="outlined"
+                size="small"
+                onClick={() => setRegion(region)}
+              >
+                {region.shortName}
+              </Button>
+            );
+          })}
+        </Stack>
+        <Divider sx={{ marginTop: 4 }} />
         <Stack
           direction="column"
           spacing={4}
@@ -77,7 +128,7 @@ const Mobile = () => {
             alignItems: "center",
           }}
         >
-          <DeltaCard data={data} />
+          <DeltaCard data={data} regionName={region.name} />
           <Stack
             direction={"row"}
             spacing={2}

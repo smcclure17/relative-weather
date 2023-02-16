@@ -1,9 +1,10 @@
+import { Region } from "@/regions";
 import { DateTime } from "luxon";
 
 export interface WeatherApiFetcher<T> {
   weatherType: WeatherType;
-  dataCache: T[];
-  fetchWeatherData(): Promise<T[]>;
+  dataCache: { [region: string]: T[] };
+  fetchWeatherData(region: Region): Promise<T[]>;
 }
 
 /**

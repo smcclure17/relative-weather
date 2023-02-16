@@ -1,5 +1,11 @@
+import { Region } from "@/regions";
 import { DateTime } from "luxon";
-import { WeatherApiFetcher, WeatherType, WeatherData, fetchJson } from "./utils";
+import {
+  WeatherApiFetcher,
+  WeatherType,
+  WeatherData,
+  fetchJson,
+} from "./utils";
 
 export interface ForecastsProps {
   /** URL to fetch data from */
@@ -12,16 +18,23 @@ export class Forecasts implements WeatherApiFetcher<WeatherData> {
   private readonly fetchUrl: string;
   private readonly lookForwardDays: number;
   weatherType = WeatherType.FORECAST;
-  dataCache: WeatherData[] = [];
+  dataCache: { [region: string]: WeatherData[] } = {};
 
   constructor(props?: ForecastsProps) {
     this.fetchUrl =
-      props?.fetchUrl || `https://api.weather.gov/gridpoints/BOX/71,90/forecast/hourly`
+      props?.fetchUrl ||
+      `https://api.weather.gov/gridpoints/:station:/forecast/hourly`;
     this.lookForwardDays = props?.lookForwardDays || 1;
   }
 
-  async fetchWeatherData(): Promise<WeatherData[]> {
-    const rawData = await fetchJson<any>(this.fetchUrl);
+  async fetchWeatherData(region: Region): Promise<WeatherData[]> {
+    if (this.dataCache[region.name]) {
+      return this.dataCache[region.name];
+    }
+
+    const rawData = await fetchJson<any>(
+      this.fetchUrl.replace(":station:", region.forecastLocation)
+    );
     const lookForward = DateTime.now().plus({ days: this.lookForwardDays });
     const dataRows: WeatherData[] = [];
 
@@ -36,6 +49,8 @@ export class Forecasts implements WeatherApiFetcher<WeatherData> {
         });
       }
     }
+
+    this.dataCache[region.name] = dataRows;
     return dataRows;
   }
 }

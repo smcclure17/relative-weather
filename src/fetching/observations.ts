@@ -7,6 +7,7 @@ import {
   celsiusToFahrenheit,
 } from "./utils";
 import { DateTime } from "luxon";
+import { Region } from "@/regions";
 
 export interface ObservationsProps {
   /** URL to fetch data from */
@@ -19,20 +20,22 @@ export class Observations implements WeatherApiFetcher<WeatherData> {
   private readonly fetchUrl: string;
   private readonly lookbackDays: number;
   weatherType = WeatherType.OBSERVATION;
-  dataCache: WeatherData[] = [];
+  dataCache: { [region: string]: WeatherData[] } = {};
 
   constructor(props?: ObservationsProps) {
-    this.fetchUrl =
-      props?.fetchUrl ?? "https://api.weather.gov/stations/KBOS/observations";
+    // Kinda hacky, but JS doesn't have template strings?
+    this.fetchUrl = `https://api.weather.gov/stations/:station:/observations`;
     this.lookbackDays = props?.lookbackDays ?? 2;
   }
 
-  async fetchWeatherData(): Promise<WeatherData[]> {
-    if (this.dataCache.length) {
-      return this.dataCache;
+  async fetchWeatherData(region: Region): Promise<WeatherData[]> {
+    if (this.dataCache[region.name]) {
+      return this.dataCache[region.name];
     }
 
-    const rawData = await fetchJson<ObservationJson>(this.fetchUrl);
+    const rawData = await fetchJson<ObservationJson>(
+      this.fetchUrl.replace(":station:", region.observationStation)
+    );
     const dataRows: WeatherData[] = [];
     const maxLookback = DateTime.now().minus({ days: this.lookbackDays });
 
@@ -51,6 +54,8 @@ export class Observations implements WeatherApiFetcher<WeatherData> {
         });
       }
     });
+
+    this.dataCache[region.name] = dataRows;
     return dataRows;
   }
 }

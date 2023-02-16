@@ -5,9 +5,10 @@ import { Weather } from "@/fetching";
 
 export interface DeltaCardProps {
   data?: Weather;
+  regionName: string;
 }
 
-export const DeltaCard = ({ data }: DeltaCardProps) => {
+export const DeltaCard = ({ data, regionName }: DeltaCardProps) => {
   const isWarmer = data?.delta && data.delta > 0;
   const isWarmerText = isWarmer ? "WARMER" : "COOLER";
   return (
@@ -20,7 +21,7 @@ export const DeltaCard = ({ data }: DeltaCardProps) => {
       }}
     >
       <Stack p={3}>
-        <Typography fontStyle={"italic"}>In Boston, MA it is</Typography>
+        <Typography fontStyle={"italic"}>In {regionName} it&apos;s</Typography>
         <Stack direction="row" spacing={0}>
           <Typography variant="h1" color={"#444"} fontWeight={"bold"}>
             {data?.delta?.toPrecision(2)}
