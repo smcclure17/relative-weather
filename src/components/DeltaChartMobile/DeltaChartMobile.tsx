@@ -8,16 +8,14 @@ export interface DeltaChartProps {
   data: NotEmptyTimeseries<number>;
   minWidth?: number;
   minHeight?: number;
-  stroke?: string;
-  strokeWidth?: number;
-  shapeRendering?: string;
-  strokeLinejoin?: string;
   margins?: { top: number; right: number; bottom: number; left: number };
+  lastObservation: number;
 }
 
 export const DeltaChartMobile = ({
   data,
   margins = { top: 20, right: 20, bottom: 20, left: 20 },
+  lastObservation,
 }: DeltaChartProps) => {
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -54,11 +52,17 @@ export const DeltaChartMobile = ({
 
   const days = [];
   for (let i = 0; i < 24; i++) {
-    days.push({
-      hour: i,
-      today: today.find((d) => d.hour === i)?.value ?? 40,
-      yesterday: yesterday.find((d) => d.hour === i)?.value ?? 40,
-    });
+    // Using "find" for each point is meh, but it's a small dataset.
+    // Should realistically index these by date for immediate lookup.
+    const todayValue = today.find((d) => d.hour === i)?.value;
+    const yesterdayValue = yesterday.find((d) => d.hour === i)?.value;
+    if (todayValue && yesterdayValue) {
+      days.push({
+        hour: i,
+        today: todayValue,
+        yesterday: yesterdayValue,
+      });
+    }
   }
 
   return (
@@ -78,6 +82,7 @@ export const DeltaChartMobile = ({
         yScale={yScale}
         minValue={min.value}
         maxValue={max.value}
+        lastObservation={lastObservation}
       />
     </Box>
   );

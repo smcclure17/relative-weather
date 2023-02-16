@@ -1,16 +1,25 @@
 import { Timeseries } from "@/timeseries";
+import { keyBy, merge } from "lodash";
 import { DateTime } from "luxon";
 import { useState, useEffect } from "react";
 import { Forecasts, ForecastsProps } from "./forecasts";
 import { Observations, ObservationsProps } from "./observations";
-import { WeatherData } from "./utils";
+import { WeatherData, WeatherType } from "./utils";
 import { DataOrError } from "./utils";
 
 export interface Weather {
+  /* Timeseries of temperature data */
   timeseries: Timeseries<number>;
+  /* Today's weather data */
   currentData: WeatherData | undefined;
+  /* Yesterday's weather data */
   previousData: WeatherData | undefined;
+  /* Temperature change between today and yesterday */
   delta: number | undefined;
+  /* Last hour of observations for today.
+   * All points after this hour for the current day are forecasts.
+   */
+  lastObservationHour: number;
 }
 
 /**
@@ -31,19 +40,24 @@ async function getWeatherData(
     observations.fetchWeatherData(),
     forecasts.fetchWeatherData(),
   ]);
-  const data = [...observationsData, ...forecastsData];
+  const data = [observationsData, forecastsData].flat();
 
+  const lastObservationHour = Math.max(
+    ...observationsData
+      .filter((d) => d.timestamp.day === DateTime.now().day)
+      .map((d) => d.timestamp.hour)
+  );
   const today = DateTime.now();
   const yesterday = today.minus({ days: 1 });
-  const currentData = findMatchingOrClosestDate(data, today);
-  const previousData = findMatchingOrClosestDate(data, yesterday);
+  const currentData = findMatchingOrClosestDate(observationsData, today);
+  const previousData = findMatchingOrClosestDate(observationsData, yesterday);
   const delta = currentData.temperature - previousData.temperature;
 
   const timeseries = new Timeseries<number>(
     data.map((d) => ({ time: d.timestamp.toJSDate(), value: d.temperature }))
-  )
+  );
 
-  return { timeseries, currentData, previousData, delta };
+  return { timeseries, currentData, previousData, delta, lastObservationHour };
 }
 
 /**

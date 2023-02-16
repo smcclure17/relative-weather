@@ -14,6 +14,7 @@ const Desktop = () => {
   if (!data) return null;
   const timeseries = data?.timeseries.removeNulls();
   if (!timeseries?.hasData()) return null;
+  console.log(data.lastObservationHour);
 
   return (
     <Paper
@@ -38,7 +39,10 @@ const Desktop = () => {
           <DayCard weatherDay={data.currentData} />
           <DayCard weatherDay={data.previousData} />
         </Stack>
-        <DeltaChart data={timeseries} />
+        <DeltaChart
+          data={timeseries}
+          lastObservation={data.lastObservationHour}
+        />
       </Stack>
     </Paper>
   );
@@ -74,18 +78,28 @@ const Mobile = () => {
           }}
         >
           <DeltaCard data={data} />
-          <Stack direction={"row"} spacing={2} maxWidth="90%" alignItems={"center"}>
-            <DayCard weatherDay={data.currentData}/>
-            <DayCard weatherDay={data.previousData}/>
+          <Stack
+            direction={"row"}
+            spacing={2}
+            maxWidth="90%"
+            alignItems={"center"}
+          >
+            <DayCard weatherDay={data.currentData} />
+            <DayCard weatherDay={data.previousData} />
           </Stack>
         </Stack>
-        <DeltaChartMobile data={timeseries} />
+        <DeltaChartMobile
+          data={timeseries}
+          lastObservation={data.lastObservationHour}
+        />
       </Stack>
     </Paper>
   );
 };
 
 export const HomePage: NextPage = () => {
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("md")
+  );
   return isMobile ? <Mobile /> : <Desktop />;
 };

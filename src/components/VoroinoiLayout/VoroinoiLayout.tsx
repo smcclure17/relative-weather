@@ -19,6 +19,7 @@ export type VoronoiLayoutProps = {
   yScale: ScaleLinear<number, number, never>;
   minValue: number;
   maxValue: number;
+  lastObservation: number;
 };
 
 interface HourlyDatapoint {
@@ -43,6 +44,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
     tooltipLeft,
     tooltipTop,
     maxValue,
+    lastObservation,
   }: VoronoiLayoutProps & WithTooltipProvidedProps<HourlyDatapoint>) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const voronoiLayout = useMemo(
@@ -140,7 +142,7 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             stroke={"#ababab"}
           />
           <LinePath
-            data={data}
+            data={data.filter((d) => d.hour <= lastObservation)}
             x={(d) => xScale(d.hour)}
             y={(d) => yScale(d.today)}
             curve={curveMonotoneX}
@@ -148,6 +150,17 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
             strokeLinejoin={"bevel"}
             stroke={"#444"}
             strokeWidth={3}
+          />
+          <LinePath
+            data={data.filter((d) => d.hour >= lastObservation)}
+            x={(d) => xScale(d.hour)}
+            y={(d) => yScale(d.today)}
+            curve={curveMonotoneX}
+            shapeRendering={"geometricPrecision"}
+            strokeLinejoin={"bevel"}
+            stroke={"#444"}
+            strokeWidth={3}
+            strokeDasharray={"3 6"}
           />
           <Group>
             <line
@@ -192,6 +205,9 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
               <Typography color={"#ababab"} style={{ fontSize: "12px" }}>
                 {hourNumberToHourString(tooltipData.hour)}
               </Typography>
+              {tooltipData.hour > lastObservation && (
+                <Typography fontStyle={"italic"}>Estimate</Typography>
+              )}
               <Typography
                 color={"#444"}
                 style={{ fontSize: "24px", fontStyle: "bold" }}
@@ -202,7 +218,9 @@ export const VoronoiLayout = withTooltip<VoronoiLayoutProps, HourlyDatapoint>(
                 color={"#44"}
                 style={{ fontSize: "12px", fontStyle: "italic" }}
               >
-                today is {tooltipData.today.toPrecision(2)} ºF
+                today{" "}
+                {tooltipData.hour <= lastObservation ? "was" : "will be"}{" "}
+                {tooltipData.today.toPrecision(2)} ºF
               </Typography>
               <Typography
                 color={"#444"}

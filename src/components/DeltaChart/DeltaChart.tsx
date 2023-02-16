@@ -5,14 +5,22 @@ import { NotEmptyTimeseries, Timeseries } from "@/timeseries";
 import { VoronoiLayout } from "../VoroinoiLayout";
 
 export interface DeltaChartProps {
+  /** Timeseries to render */
   data: NotEmptyTimeseries<number>;
+  /** Minimum width of the chart */
   minWidth?: number;
+  /** Minimum height of the chart */
   minHeight?: number;
-  stroke?: string;
+  /** Width of the line */
   strokeWidth?: number;
-  shapeRendering?: string;
-  strokeLinejoin?: string;
+  /** Margins of the chart */
   margins?: { top: number; right: number; bottom: number; left: number };
+  /** Last observation hour. Used to determine when forecasts begin.
+   * 
+   * This is kind of a hack. Ideally, we'd use the WeatherType enum to determine
+   * when forecasts begin, but we would need to rework the Timeseries class.
+   */
+  lastObservation: number;
 }
 
 export const DeltaChart = ({
@@ -20,6 +28,7 @@ export const DeltaChart = ({
   margins = { top: 20, right: 20, bottom: 20, left: 20 },
   minHeight = 400,
   minWidth = 700,
+  lastObservation
 }: DeltaChartProps) => {
   const today = reIndexToHours(data.getDataForDate(new Date()));
   const yesterday = reIndexToHours(
@@ -34,16 +43,22 @@ export const DeltaChart = ({
 
   const yScale = scaleLinear({
     domain: [min.value, max.value + (max.value - min.value) * 0.01],
-    range: [minHeight - (margins.bottom + margins.top) , 0],
+    range: [minHeight - (margins.bottom + margins.top), 0],
   });
 
   const days = [];
   for (let i = 0; i < 24; i++) {
-    days.push({
-      hour: i,
-      today: today.find((d) => d.hour === i)?.value ?? 40,
-      yesterday: yesterday.find((d) => d.hour === i)?.value ?? 40,
-    });
+    // Using "find" for each point is meh, but it's a small dataset.
+    // Should realistically index these by date for immediate lookup.
+    const todayValue = today.find((d) => d.hour === i)?.value;
+    const yesterdayValue = yesterday.find((d) => d.hour === i)?.value;
+    if (todayValue && yesterdayValue) {
+      days.push({
+        hour: i,
+        today: todayValue,
+        yesterday: yesterdayValue,
+      });
+    }
   }
 
   return (
@@ -67,6 +82,7 @@ export const DeltaChart = ({
         yScale={yScale}
         minValue={min.value}
         maxValue={max.value}
+        lastObservation={lastObservation}
       />
     </Box>
   );
