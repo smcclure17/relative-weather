@@ -13,6 +13,12 @@ export interface Region {
   forecastLocation: string;
 }
 
+// To add a region:
+// 1. Go to https://forecast.weather.gov/ and search the city
+// 2. The observation station is under "Current conditions at <location name> (STATION)"
+// 3. Click the "local forecast office" link to get the forecastLocation
+// 4. Go to https://api.weather.gov/points/32.8571,-117.2733 with the lat lon to get the points
+// 5. Forecast is {forecast station}/{gridX},{gridY}
 export const regions = {
   [RegionId.BOSTON]: {
     shortName: "Boston",

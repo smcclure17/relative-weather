@@ -100,7 +100,7 @@ const Mobile = () => {
         alignItems: "center",
       }}
     >
-      <Stack p={3} border={2}>
+      <Stack p={3}>
         <Stack
           direction={"row"}
           spacing={2}
