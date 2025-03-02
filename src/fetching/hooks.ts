@@ -1,6 +1,5 @@
 import { Region } from "@/regions";
 import { Timeseries } from "@/timeseries";
-import { keyBy, merge } from "lodash";
 import { DateTime } from "luxon";
 import { useState, useEffect } from "react";
 import { Forecasts, ForecastsProps } from "./forecasts";

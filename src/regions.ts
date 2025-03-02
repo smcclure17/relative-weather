@@ -3,6 +3,7 @@ export enum RegionId {
   SEATTLE = "seattle",
   NEW_YORK = "new-york",
   AUSTIN = "austin",
+  SAN_DIEGO = "san-diego",
 }
 
 export interface Region {
@@ -37,12 +38,18 @@ export const regions = {
     observationStation: "KAUS",
     forecastLocation: "EWX/155,90",
   },
+  [RegionId.SAN_DIEGO]: {
+    shortName: "San Diego",
+    name: "San Diego, CA",
+    observationStation: "KSAN",
+    forecastLocation: "SGX/54,21",
+  },
 };
 
 export function getRegionById(id: RegionId): Region {
   const region = regions[id];
-    if (!region) throw new Error(`Region ${id} not found.`);
-    return region;
+  if (!region) throw new Error(`Region ${id} not found.`);
+  return region;
 }
 
 export const allRegions = Object.values(regions);

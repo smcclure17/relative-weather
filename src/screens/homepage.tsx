@@ -17,7 +17,6 @@ import {
   getRegionById,
   Region,
   RegionId,
-  regions,
 } from "@/regions";
 
 const Desktop = () => {
