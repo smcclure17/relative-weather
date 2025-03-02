@@ -12,12 +12,7 @@ import {
 } from "@mui/material";
 import { NextPage } from "next";
 import { useState } from "react";
-import {
-  allRegions,
-  getRegionById,
-  Region,
-  RegionId,
-} from "@/regions";
+import { allRegions, getRegionById, Region, RegionId } from "@/regions";
 
 const Desktop = () => {
   const boston = getRegionById(RegionId.BOSTON);
@@ -41,7 +36,12 @@ const Desktop = () => {
         alignItems: "center",
       }}
     >
-      <Stack p={5} alignContent="center">
+      <Stack
+        p={5}
+        alignContent="center"
+        flexWrap={"wrap"}
+        justifyContent="center"
+      >
         <Stack direction={"row"} spacing={2} margin="auto">
           {allRegions.map((region) => {
             return (
@@ -100,15 +100,27 @@ const Mobile = () => {
         alignItems: "center",
       }}
     >
-      <Stack p={5} alignContent="center">
-        <Stack direction={"row"} spacing={2} alignItems="center" margin="auto">
+      <Stack p={3} border={2}>
+        <Stack
+          direction={"row"}
+          spacing={2}
+          margin="auto"
+          alignContent="center"
+          justifyContent={"center"}
+          flexWrap={"wrap"}
+          rowGap={2}
+        >
           {allRegions.map((region) => {
             return (
               <Button
                 key={region.shortName}
                 color="secondary"
                 variant="outlined"
-                size="small"
+                sx={{
+                  whiteSpace: "nowrap",
+                  minWidth: "auto",
+                  paddingX: 2,
+                }}
                 onClick={() => setRegion(region)}
               >
                 {region.shortName}
@@ -116,7 +128,7 @@ const Mobile = () => {
             );
           })}
         </Stack>
-        <Divider sx={{ marginTop: 4 }} />
+        <Divider sx={{ marginTop: 3 }} />
         <Stack
           direction="column"
           spacing={4}
