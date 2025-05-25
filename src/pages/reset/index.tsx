@@ -1,20 +1,7 @@
-import { StorageKeys, useLocalStorage } from "@/fetching/hooks";
-import { Region } from "@/regions";
 import { HomePage } from "@/screens/homepage";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 export default function Home() {
-  const [defaultCity] = useLocalStorage<Region>(StorageKeys.DEFAULT_CITY);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (defaultCity !== undefined) {
-      router.push(`/${defaultCity.id}`);
-    }
-  }, [defaultCity, router]);
-
   return (
     <>
       <Head>
@@ -41,7 +28,7 @@ export default function Home() {
         />
         <meta name="twitter:image" content="/og-image.png" />
       </Head>
-      {defaultCity === undefined && <HomePage />}
+      <HomePage />
     </>
   );
 }

@@ -13,6 +13,7 @@ import {
 import { SearchItem } from "@/components";
 import { Region } from "@/regions";
 import { StyledAutocomplete } from "./Search.style";
+import { StorageKeys, useLocalStorage } from "@/fetching/hooks";
 
 function stringifyOption(region: Region) {
   return region.name;
@@ -38,6 +39,7 @@ export interface RegionSearchProps
    */
   renderInput?: CustomAutocompleteProps["renderInput"];
   value?: Region;
+  setDefaultOnSelect?: boolean
 }
 
 export const Search = ({
@@ -45,8 +47,13 @@ export const Search = ({
   inputLabel = "City",
   renderInput: customRenderInput,
   value,
+  setDefaultOnSelect = false,
   ...otherAutocompleteProps
 }: RegionSearchProps) => {
+  const [defaultCity, setDefaultCity] = useLocalStorage<Region>(
+    StorageKeys.DEFAULT_CITY
+  );
+
   const defaultRenderInput: CustomAutocompleteProps["renderInput"] = (
     params
   ) => (
@@ -59,6 +66,7 @@ export const Search = ({
       InputProps={{
         ...params.InputProps,
         endAdornment: (
+          // fix mobile alignment
           <Box sx={{ mr: -2, pt: 0.75 }}>
             <SearchIcon />
           </Box>
@@ -78,6 +86,10 @@ export const Search = ({
         reason: AutocompleteChangeReason
       ) => {
         if (region && reason === "selectOption") {
+          if (setDefaultOnSelect) {
+            setDefaultCity(region);
+          }
+
           // Typescript doesn't allow to assign a string to window.location
           // https://github.com/microsoft/TypeScript/issues/48949
           (window as any).location = `/${region.id}`;

@@ -4,6 +4,7 @@ import { DeltaChartMobile } from "@/components/DeltaChartMobile";
 import { useWeather } from "@/fetching";
 import { Box, Paper, Stack, Theme, useMediaQuery } from "@mui/material";
 import { allRegions, getRegionById, RegionId } from "@/regions";
+import { Footer } from "@/components/Footer";
 
 interface RegionScreenProps {
   regionId: string;
@@ -29,33 +30,36 @@ const Desktop = ({ regionId }: RegionScreenProps) => {
         alignItems: "center",
       }}
     >
-      <Stack
-        p={5}
-        alignContent="center"
-        flexWrap={"wrap"}
-        justifyContent="center"
-      >
-        <Box paddingY={1} px={16}>
-          <Search options={allRegions} value={region} />
-        </Box>
+      <Stack>
         <Stack
-          direction="row"
-          spacing={4}
-          my={4}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          p={5}
+          alignContent="center"
+          flexWrap={"wrap"}
+          justifyContent="center"
         >
-          <DeltaCard data={data} regionName={region.name} />
-          <DayCard weatherDay={data.currentData} />
-          <DayCard weatherDay={data.previousData} />
+          <Box paddingY={1} px={16}>
+            <Search options={allRegions} value={region} />
+          </Box>
+          <Stack
+            direction="row"
+            spacing={4}
+            my={4}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <DeltaCard data={data} regionName={region.name} />
+            <DayCard weatherDay={data.currentData} />
+            <DayCard weatherDay={data.previousData} />
+          </Stack>
+          <DeltaChart
+            data={timeseries}
+            lastObservation={data.lastObservationHour}
+          />
         </Stack>
-        <DeltaChart
-          data={timeseries}
-          lastObservation={data.lastObservationHour}
-        />
+        <Footer></Footer>
       </Stack>
     </Paper>
   );
@@ -80,35 +84,38 @@ const Mobile = ({ regionId }: RegionScreenProps) => {
         alignItems: "center",
       }}
     >
-      <Stack p={3}>
-        <Box paddingY={2} px={8}>
-          <Search options={allRegions} value={region} />
-        </Box>
-        <Stack
-          direction="column"
-          spacing={4}
-          my={4}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <DeltaCard data={data} regionName={region.name} />
+      <Stack>
+        <Stack p={3}>
+          <Box paddingY={2} px={8}>
+            <Search options={allRegions} value={region} />
+          </Box>
           <Stack
-            direction={"row"}
-            spacing={2}
-            maxWidth="90%"
-            alignItems={"center"}
+            direction="column"
+            spacing={4}
+            my={4}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <DayCard weatherDay={data.currentData} />
-            <DayCard weatherDay={data.previousData} />
+            <DeltaCard data={data} regionName={region.name} />
+            <Stack
+              direction={"row"}
+              spacing={2}
+              maxWidth="90%"
+              alignItems={"center"}
+            >
+              <DayCard weatherDay={data.currentData} />
+              <DayCard weatherDay={data.previousData} />
+            </Stack>
           </Stack>
+          <DeltaChartMobile
+            data={timeseries}
+            lastObservation={data.lastObservationHour}
+          />
         </Stack>
-        <DeltaChartMobile
-          data={timeseries}
-          lastObservation={data.lastObservationHour}
-        />
+        <Footer></Footer>
       </Stack>
     </Paper>
   );

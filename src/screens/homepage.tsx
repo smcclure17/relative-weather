@@ -50,7 +50,7 @@ const Desktop = () => {
         </Stack>
 
         <Box paddingTop={2} px={16}>
-          <Search options={allRegions} />
+          <Search options={allRegions} setDefaultOnSelect={true} />
         </Box>
         <Stack
           direction="column"
@@ -118,7 +118,7 @@ const Mobile = () => {
         </Stack>
 
         <Box paddingTop={4} px={6}>
-          <Search options={allRegions} />
+          <Search options={allRegions} setDefaultOnSelect={true} />
         </Box>
 
         <Stack
