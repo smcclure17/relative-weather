@@ -40,7 +40,7 @@ export interface RegionSearchProps
    */
   renderInput?: CustomAutocompleteProps["renderInput"];
   value?: Region;
-  setDefaultOnSelect?: boolean
+  setDefaultOnSelect?: boolean;
 }
 
 export const Search = ({
@@ -55,20 +55,28 @@ export const Search = ({
     StorageKeys.DEFAULT_CITY
   );
 
+  // Some of the alignment is really messy, im not sure
+  // how to really fix it, but this sets the alignment.
+  const iconPadding = value ? -2 : 2;
+  const inputLabelObj = (
+    <Box paddingLeft={1} pt={0.5}>
+      {inputLabel}
+    </Box>
+  );
+
   const defaultRenderInput: CustomAutocompleteProps["renderInput"] = (
     params
   ) => (
     <TextField
       sx={{ borderRadius: 1 }}
       {...params}
-      label={inputLabel}
+      label={inputLabelObj}
       variant="outlined"
       size="small"
       InputProps={{
         ...params.InputProps,
         endAdornment: (
-          // fix mobile alignment
-          <Box sx={{ mr: -2, pt: 0.75 }}>
+          <Box sx={{ mr: iconPadding, pt: 0.75 }}>
             <SearchIcon />
           </Box>
         ),
