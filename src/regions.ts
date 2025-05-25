@@ -7,6 +7,7 @@ export enum RegionId {
 }
 
 export interface Region {
+  id: string;
   name: string;
   shortName: string;
   observationStation: string;
@@ -21,30 +22,35 @@ export interface Region {
 // 5. Forecast is {forecast station}/{gridX},{gridY}
 export const regions = {
   [RegionId.BOSTON]: {
+    id: "boston",
     shortName: "Boston",
     name: "Boston, MA",
     observationStation: "KBOS",
     forecastLocation: "BOX/71,90",
   },
   [RegionId.SEATTLE]: {
+    id: "seattle",
     shortName: "Seattle",
     name: "Seattle, WA",
     observationStation: "KSEA",
     forecastLocation: "SEW/124,67",
   },
   [RegionId.NEW_YORK]: {
+    id: "new-york",
     shortName: "New York",
     name: "New York, NY",
     observationStation: "KNYC",
     forecastLocation: "OKX/32,34",
   },
   [RegionId.AUSTIN]: {
+    id: "austin",
     shortName: "Austin",
     name: "Austin, TX",
     observationStation: "KAUS",
     forecastLocation: "EWX/155,90",
   },
   [RegionId.SAN_DIEGO]: {
+    id: "san-diego",
     shortName: "San Diego",
     name: "San Diego, CA",
     observationStation: "KSAN",

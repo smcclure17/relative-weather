@@ -1,36 +1,34 @@
-import { DeltaCard, DeltaChart } from "@/components";
-import { DayCard } from "@/components/DayCard";
-import { DeltaChartMobile } from "@/components/DeltaChartMobile";
-import { useWeather } from "@/fetching";
+import { DeltaCard, Search } from "@/components";
+import { useWeathers } from "@/fetching";
 import {
-  Button,
-  Divider,
+  Box,
   Paper,
   Stack,
   Theme,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { NextPage } from "next";
-import { useState } from "react";
-import { allRegions, getRegionById, Region, RegionId } from "@/regions";
+import { allRegions, getRegionById, RegionId } from "@/regions";
 
 const Desktop = () => {
-  const boston = getRegionById(RegionId.BOSTON);
-  // TODO: use local storage to persist region across sessions.
-  const [region, setRegion] = useState<Region>(boston);
-  const { data, error } = useWeather(region);
+  const regions = [
+    getRegionById(RegionId.BOSTON),
+    getRegionById(RegionId.SAN_DIEGO),
+    getRegionById(RegionId.NEW_YORK),
+  ];
+  const { data, error } = useWeathers(regions);
 
   if (error) {
     return <div>Something went wrong</div>;
   }
 
   if (!data) return null;
-  const timeseries = data?.timeseries.removeNulls();
-  if (!timeseries?.hasData()) return null;
 
   return (
     <Paper
       sx={{
+        marginTop: "48px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -38,63 +36,64 @@ const Desktop = () => {
     >
       <Stack
         p={5}
+        spacing={4}
         alignContent="center"
         flexWrap={"wrap"}
         justifyContent="center"
+        textAlign={"center"}
       >
-        <Stack direction={"row"} spacing={2} margin="auto">
-          {allRegions.map((region) => {
-            return (
-              <Button
-                key={region.shortName}
-                color="secondary"
-                variant="outlined"
-                onClick={() => setRegion(region)}
-              >
-                {region.name}
-              </Button>
-            );
-          })}
+        <Stack>
+          <Typography variant="h3">Choose your city</Typography>
+          <Typography variant="body1" color={"GrayText"}>
+            In the future, this city will be selected automatically{" "}
+          </Typography>
         </Stack>
-        <Divider sx={{ marginTop: 4 }} />
+
+        <Box paddingTop={2} px={16}>
+          <Search options={allRegions} />
+        </Box>
         <Stack
-          direction="row"
+          direction="column"
           spacing={4}
-          my={4}
+          py={4}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <DeltaCard data={data} regionName={region.name} />
-          <DayCard weatherDay={data.currentData} />
-          <DayCard weatherDay={data.previousData} />
+          <Typography variant="h5" color={"GrayText"}>
+            Cities at a glance
+          </Typography>
+          <Stack direction={"row"} spacing={4}>
+            <DeltaCard data={data[0]} regionName={regions[0].name} />
+            <DeltaCard data={data[1]} regionName={regions[1].name} />
+            <DeltaCard data={data[2]} regionName={regions[2].name} />
+          </Stack>
         </Stack>
-        <DeltaChart
-          data={timeseries}
-          lastObservation={data.lastObservationHour}
-        />
       </Stack>
     </Paper>
   );
 };
 
 const Mobile = () => {
-  const boston = getRegionById(RegionId.BOSTON);
-  const [region, setRegion] = useState<Region>(boston);
-  const { data, error } = useWeather(region);
+  const regions = [
+    getRegionById(RegionId.BOSTON),
+    getRegionById(RegionId.SAN_DIEGO),
+    getRegionById(RegionId.NEW_YORK),
+  ];
+  const { data, error } = useWeathers(regions);
+
   if (error) {
     return <div>Something went wrong</div>;
   }
 
   if (!data) return null;
-  const timeseries = data?.timeseries.removeNulls();
-  if (!timeseries?.hasData()) return null;
 
   return (
     <Paper
       sx={{
+        paddingTop: "72px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -103,57 +102,44 @@ const Mobile = () => {
       <Stack p={3}>
         <Stack
           direction={"row"}
-          spacing={2}
+          spacing={4}
           margin="auto"
           alignContent="center"
           justifyContent={"center"}
           flexWrap={"wrap"}
           rowGap={2}
         >
-          {allRegions.map((region) => {
-            return (
-              <Button
-                key={region.shortName}
-                color="secondary"
-                variant="outlined"
-                sx={{
-                  whiteSpace: "nowrap",
-                  minWidth: "auto",
-                  paddingX: 2,
-                }}
-                onClick={() => setRegion(region)}
-              >
-                {region.shortName}
-              </Button>
-            );
-          })}
+          <Stack spacing={2} textAlign={"center"}>
+            <Typography variant="h3">Choose your city</Typography>
+            <Typography px={2} variant="body1" color={"GrayText"}>
+              In the future, this city will be selected automatically{" "}
+            </Typography>
+          </Stack>
         </Stack>
-        <Divider sx={{ marginTop: 3 }} />
+
+        <Box paddingTop={4} px={6}>
+          <Search options={allRegions} />
+        </Box>
+
         <Stack
           direction="column"
           spacing={4}
-          my={4}
+          py={8}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <DeltaCard data={data} regionName={region.name} />
-          <Stack
-            direction={"row"}
-            spacing={2}
-            maxWidth="90%"
-            alignItems={"center"}
-          >
-            <DayCard weatherDay={data.currentData} />
-            <DayCard weatherDay={data.previousData} />
+          <Typography variant="h5" color={"GrayText"}>
+            Cities at a glance
+          </Typography>
+          <Stack direction={"column"} spacing={4}>
+            <DeltaCard data={data[0]} regionName={regions[0].name} />
+            <DeltaCard data={data[1]} regionName={regions[1].name} />
+            <DeltaCard data={data[2]} regionName={regions[2].name} />
           </Stack>
         </Stack>
-        <DeltaChartMobile
-          data={timeseries}
-          lastObservation={data.lastObservationHour}
-        />
       </Stack>
     </Paper>
   );
