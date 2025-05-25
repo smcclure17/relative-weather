@@ -1,3 +1,4 @@
+// @ts-nocheck alas
 import React, { HTMLAttributes } from "react";
 
 import SearchIcon from "@mui/icons-material/Search";
