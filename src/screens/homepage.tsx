@@ -42,8 +42,8 @@ const Desktop = () => {
         justifyContent="center"
         textAlign={"center"}
       >
-        <Stack>
-          <Typography variant="h3">Choose your city</Typography>
+        <Stack spacing={1}>
+          <Typography variant="h3">Choose Your City</Typography>
           <Typography variant="body1" color={"GrayText"}>
             In the future, this city will be selected automatically{" "}
           </Typography>
@@ -63,7 +63,7 @@ const Desktop = () => {
           }}
         >
           <Typography variant="h5" color={"GrayText"}>
-            Cities at a glance
+            Cities at a Glance
           </Typography>
           <Stack direction={"row"} spacing={4}>
             <DeltaCard data={data[0]} regionName={regions[0].name} />
@@ -110,7 +110,7 @@ const Mobile = () => {
           rowGap={2}
         >
           <Stack spacing={2} textAlign={"center"}>
-            <Typography variant="h3">Choose your city</Typography>
+            <Typography variant="h3">Choose Your City</Typography>
             <Typography px={2} variant="body1" color={"GrayText"}>
               In the future, this city will be selected automatically{" "}
             </Typography>
@@ -132,7 +132,7 @@ const Mobile = () => {
           }}
         >
           <Typography variant="h5" color={"GrayText"}>
-            Cities at a glance
+            Cities at a Glance
           </Typography>
           <Stack direction={"column"} spacing={4}>
             <DeltaCard data={data[0]} regionName={regions[0].name} />
